@@ -79,7 +79,7 @@
             </div>
             <!-- END RPOFILE -->
             <!-- BEGIN NAV -->
-            <div class="title">Navigation</div>
+            <div class="title">{{ trans('custom.navigation') }}</div>
             <ul class="nav-sidebar">
                 <li class="{{ Utilities::setActiveMenu('dashboard*') }}">
                     <a href="{{ action('DashboardController@index') }}">

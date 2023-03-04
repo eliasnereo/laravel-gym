@@ -39,7 +39,7 @@ class MembersController extends Controller
 
         $request->flash();
 
-        return view('members.index', compact('members', 'count', 'drp_placeholder', 'old_sort'));
+        return view('members.index', compact('members', 'count', 'drp_placeholder'));
     }
 
     public function active(Request $request)
@@ -51,7 +51,7 @@ class MembersController extends Controller
 
         $request->flash();
 
-        return view('members.active', compact('members', 'count', 'drp_placeholder', 'old_sort'));
+        return view('members.active', compact('members', 'count', 'drp_placeholder'));
     }
 
     public function inactive(Request $request)
@@ -63,7 +63,7 @@ class MembersController extends Controller
 
         $request->flash();
 
-        return view('members.inactive', compact('members', 'count', 'drp_placeholder', 'old_sort'));
+        return view('members.inactive', compact('members', 'count', 'drp_placeholder'));
     }
 
     /**
