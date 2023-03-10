@@ -51,18 +51,15 @@
                                 </div>
 
                                 @if(isset($user))
-                                    <?php
-                                    $media = $user->getMedia('staff');
-                                    $image = ($media->isEmpty() ? 'https://placeholdit.imgix.net/~text?txtsize=18&txt=NA&w=70&h=70' : url($media[0]->getUrl('form')));
-                                    ?>
+                                    <?php $image = Auth::user()->getImageUrl(null, 'form'); ?>
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             {!! Form::label('photo','Photo') !!}
                                             {!! Form::file('photo',['class'=>'form-control', 'id' => 'photo']) !!}
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
-                                        <img alt="staff photo" class="pull-right" src="{{ $image }}"/>
+                                    <div class="col-sm-2 text-center">
+                                        <img alt="staff photo" class="" src="{{ $image }}" width="50" height="50"/>
                                     </div>
                                 @else
                                     <div class="col-sm-6">

@@ -34,10 +34,11 @@ class constFollowUpBy
 // File PATHS
 class constPaths
 {
-    const UserProfilePhoto = '/assets/img/profile';
-    const UserProofPhoto = '/assets/img/proof';
-    const StaffPhoto = '/assets/img/staff';
-    const GymLogo = '/assets/img/gym';
+    const UserProfilePhoto = 'img/profile/';
+    const UserProofPhoto = 'img/proof/';
+    const StaffPhoto = 'img/staff/';
+    const GymLogo = 'img/gym/';
+    const UserDefaultImage = 'https://static.vecteezy.com/system/resources/thumbnails/009/734/564/small/default-avatar-profile-icon-of-social-media-user-vector.jpg';
 }
 
 class constFilePrefix
@@ -95,4 +96,7 @@ class constPaymentMode
 {
     const Cheque = 0;
     const Cash = 1;
+    const Transfer = 2;
+    const Debit = 3;
+    const Credit = 4;
 }

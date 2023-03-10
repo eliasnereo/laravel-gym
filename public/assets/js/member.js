@@ -29,9 +29,9 @@ var startDateValidators = {
 			},
 			address: {
 				validators: {
-					notEmpty: {
-						message: 'The address is required and can\'t be empty'
-					},
+					// notEmpty: {
+					// 	message: 'The address is required and can\'t be empty'
+					// },
 					stringLength: {
                         max: 200,
                         message: 'It must be less than 200 characters'
@@ -40,9 +40,9 @@ var startDateValidators = {
 			},
 			email: {
 				validators: {
-					notEmpty: {
-						message: 'The email address is required and can\'t be empty'
-					},
+					// notEmpty: {
+					// 	message: 'The email address is required and can\'t be empty'
+					// },
 					emailAddress: {
 						message: 'The input is not a valid email address'
 					},
@@ -72,16 +72,16 @@ var startDateValidators = {
 			},
 			health_issues: {
 				validators: {
-					notEmpty: {
-						message: 'This field required and can\'t be empty'
-					}
+					// notEmpty: {
+					// 	message: 'This field required and can\'t be empty'
+					// }
 				}
 			},
 			proof_name: {
 				validators: {
-					notEmpty: {
-						message: 'The proof name is required and can\'t be empty'
-					},
+					// notEmpty: {
+					// 	message: 'The proof name is required and can\'t be empty'
+					// },
 					stringLength: {
                         max: 50,
                         message: 'It must be less than 50 characters'
@@ -104,9 +104,9 @@ var startDateValidators = {
 			},
 			pin_code: {
 				validators: {
-					notEmpty: {
-						message: 'The Pin Code is required and can\'t be empty'
-					},
+					// notEmpty: {
+					// 	message: 'The Pin Code is required and can\'t be empty'
+					// },
 					regexp: {
 						regexp: /^[0-9\.]+$/,
 						message: 'The input is not a valid pin code'
@@ -115,9 +115,9 @@ var startDateValidators = {
 			},
 			occupation: {
 				validators: {
-					notEmpty: {
-						message: 'The occupation is required and can\'t be empty'
-					},
+					// notEmpty: {
+					// 	message: 'The occupation is required and can\'t be empty'
+					// },
 					stringLength: {
                         max: 50,
                         message: 'It must be less than 50 characters'
@@ -126,9 +126,9 @@ var startDateValidators = {
 			},
 			aim: {
 				validators: {
-					notEmpty: {
-						message: 'The aim is required and can\'t be empty'
-					},
+					// notEmpty: {
+					// 	message: 'The aim is required and can\'t be empty'
+					// },
 					stringLength: {
                         max: 50,
                         message: 'It must be less than 50 characters'
@@ -235,9 +235,9 @@ var startDateValidators = {
 			},
 			emergency_contact: {
 				validators: {
-					notEmpty: {
-						message: 'The contact is required and can\'t be empty'
-					},
+					// notEmpty: {
+					// 	message: 'The contact is required and can\'t be empty'
+					// },
 					regexp: {
 						regexp: /^[0-9\.]+$/,
 						message: 'The input is not a valid number'

@@ -47,7 +47,7 @@
 <body class="fixed-leftside fixed-header">
 <!-- BEGIN HEADER -->
 <header class="hidden-print">
-    <span class="logo">Gymie</span>
+    <span class="logo">{{ config('custom.commons.app_name') }}</span>
     <nav class="navbar navbar-static-top">
         <a href="#" class="navbar-btn sidebar-toggle">
             <span class="icon-bar"></span>
@@ -65,11 +65,11 @@
             <!-- BEGIN RPOFILE -->
             <div class="nav-profile">
                 <div class="thumb">
-                    <?php
-                    $media = Auth::user()->getMedia();
-                    $image = ($media->isEmpty() ? 'https://placeholdit.imgix.net/~text?txtsize=18&txt=NA&w=50&h=50' : url($media[0]->getUrl('thumb')));
+                    <?php 
+                    
+                        $image = Auth::user()->profile_picture; 
                     ?>
-                    <img src="{{ $image }}" class="img-circle" alt=""/>
+                    <img src="{{ Auth::user()->getImageUrl(null, 'thumb') }}" class="img-circle" alt=""/>
                 </div>
                 <div class="info">
                     <span class="color-grey-400">{{Utilities::getGreeting()}},</span><br/>

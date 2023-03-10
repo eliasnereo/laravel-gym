@@ -49,14 +49,6 @@ class Member extends Model implements HasMediaConversions
         return (new Carbon($value))->format('Y-m-d');
     }
 
-    // Media i.e. Image size conversion
-    public function registerMediaConversions()
-    {
-        $this->addMediaConversion('thumb')->setManipulations(['w' => 50, 'h' => 50, 'q' => 100, 'fit' => 'crop'])->performOnCollections('profile');
-
-        $this->addMediaConversion('form')->setManipulations(['w' => 70, 'h' => 70, 'q' => 100, 'fit' => 'crop'])->performOnCollections('profile', 'proof');
-    }
-
     //Relationships
     public function subscriptions()
     {
@@ -75,13 +67,18 @@ class Member extends Model implements HasMediaConversions
         $sorting_direction = ($sorting_direction != null ? $sorting_direction : 'desc');
 
         if ($drp_start == null or $drp_end == null) {
-            return $query->select('mst_members.id', 'mst_members.member_code', 'mst_members.name', 'mst_members.contact', 'mst_members.created_at', 'mst_members.status')->where('mst_members.status', '!=', \constStatus::Archive)->orderBy($sorting_field, $sorting_direction);
+            return $query->select('mst_members.id', 'mst_members.member_code', 'mst_members.name', 'mst_members.contact', 'mst_members.created_at', 'mst_members.status', 'mst_members.photo')
+                        ->where('mst_members.status', '!=', \constStatus::Archive)
+                        ->orderBy($sorting_field, $sorting_direction);
         }
 
-        return $query->select('mst_members.id', 'mst_members.member_code', 'mst_members.name', 'mst_members.contact', 'mst_members.created_at', 'mst_members.status')->where('mst_members.status', '!=', \constStatus::Archive)->whereBetween('mst_members.created_at', [
-            $drp_start,
-            $drp_end,
-        ])->orderBy($sorting_field, $sorting_direction);
+        return $query->select('mst_members.id', 'mst_members.member_code', 'mst_members.name', 'mst_members.contact', 'mst_members.created_at', 'mst_members.status', 'mst_members.photo')
+                    ->where('mst_members.status', '!=', \constStatus::Archive)
+                    ->whereBetween('mst_members.created_at', [
+                        $drp_start,
+                        $drp_end,
+                    ])
+                    ->orderBy($sorting_field, $sorting_direction);
     }
 
     public function scopeActive($query)
@@ -108,5 +105,27 @@ class Member extends Model implements HasMediaConversions
     public function scopeRegistrations($query, $month, $year)
     {
         return $query->whereMonth('created_at', '=', $month)->whereYear('created_at', '=', $year)->count();
+    }
+
+
+    // Media i.e. Image size conversion
+    public function registerMediaConversions()
+    {
+        $this->addMediaConversion('thumb')
+                ->setManipulations(['w' => 50, 'h' => 50, 'q' => 100, 'fit' => 'crop'])
+                ->performOnCollections('profile');
+
+        $this->addMediaConversion('form')
+                ->setManipulations(['w' => 70, 'h' => 70, 'q' => 100, 'fit' => 'crop'])
+                ->performOnCollections('profile', 'proof');
+    }
+
+    public function getImageUrl($collectionName, $mediaConversion)
+    {
+        $media = $this->getMedia($collectionName);
+        return $media->isEmpty() 
+                    ? \constPaths::UserDefaultImage 
+                    : url($media[0]->getUrl($mediaConversion));
+                                   
     }
 }

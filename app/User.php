@@ -12,8 +12,10 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Spatie\MediaLibrary\HasMedia\Interfaces\HasMedia;
+use Spatie\MediaLibrary\Media;
 
-class User extends Model implements AuthenticatableContract, CanResetPasswordContract, HasMediaConversions
+class User extends Model implements AuthenticatableContract, CanResetPasswordContract, HasMedia, HasMediaConversions
 {
     use Authenticatable, CanResetPassword, EntrustUserTrait, HasMediaTrait;
 
@@ -62,5 +64,14 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function roleUser()
     {
         return $this->hasOne('App\RoleUser');
+    }
+
+    public function getImageUrl($collectionName, $mediaConversion)
+    {
+        $media = $this->getMedia($collectionName);
+        return $media->isEmpty() 
+                    ? \constDefaultImages::userDefaultImage 
+                    : url($media[0]->getUrl($mediaConversion));
+                                   
     }
 }
