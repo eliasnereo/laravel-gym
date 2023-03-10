@@ -70,7 +70,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     {
         $media = $this->getMedia($collectionName);
         return $media->isEmpty() 
-                    ? \constDefaultImages::userDefaultImage 
+                    ? \constPaths::UserDefaultImage 
                     : url($media[0]->getUrl($mediaConversion));
                                    
     }
