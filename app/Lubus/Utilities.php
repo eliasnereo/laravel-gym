@@ -490,6 +490,11 @@ class Utilities
         }
     }
 
+    public static function getGymLogo()
+    {
+        return Setting::where('key', 'gym_logo')->first()->value;
+    }
+
     /**
      *File Upload.
      **/

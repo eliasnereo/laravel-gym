@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use Lubus\Constants\Status;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class UsersController extends Controller
 {
@@ -84,6 +85,7 @@ class UsersController extends Controller
 
     public function update($id, Request $request)
     {
+
         $user = user::findOrFail($id);
 
         $user->name = $request->name;
@@ -94,12 +96,13 @@ class UsersController extends Controller
         }
 
         $user->status = $request->status;
-
         $user->update();
-        $user->photo = \constFilePrefix::staffPhoto.$user->id.'.jpg';
-        $user->save();
+        //$user->photo = \constFilePrefix::staffPhoto.$user->id.'.jpg';
+        //$user->save();
 
-        \Utilities::uploadFile($request, \constFilePrefix::staffPhoto, $user->id, 'photo', \constPaths::staffPhoto);
+        //\Utilities::uploadFile($request, \constFilePrefix::staffPhoto, $user->id, 'photo', \constPaths::staffPhoto);
+
+        
 
         flash()->success('User details was successfully updated');
 

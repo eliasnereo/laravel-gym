@@ -205,7 +205,7 @@ Route::group(['prefix' => 'expenses', 'middleware' => ['auth']], function () {
 });
 
 //settings
-Route::group(['prefix' => 'settings', 'middleware' => ['permission:manage-gymie|manage-settings', 'auth']], function () {
+Route::group(['prefix' => 'settings', 'middleware' => ['auth', 'permission:manage-gymie|manage-settings']], function () {
     Route::get('/', 'SettingsController@show');
     Route::get('edit', 'SettingsController@edit');
     Route::post('save', 'SettingsController@save');
@@ -213,7 +213,7 @@ Route::group(['prefix' => 'settings', 'middleware' => ['permission:manage-gymie|
 
 //User Module with roles & permissions
 //User
-Route::group(['prefix' => 'user', 'middleware' => ['permission:manage-gymie|manage-users', 'auth']], function () {
+Route::group(['prefix' => 'user', 'middleware' => ['auth', 'permission:manage-gymie|manage-users' ]], function () {
     Route::get('/', 'AclController@userIndex');
     Route::get('create', 'AclController@createUser');
     Route::post('/', 'AclController@storeUser');
@@ -223,7 +223,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['permission:manage-gymie|mana
 });
 
 //Roles
-Route::group(['prefix' => 'user/role', 'middleware' => ['permission:manage-gymie|manage-users', 'auth']], function () {
+Route::group(['prefix' => 'user/role', 'middleware' => ['auth', 'permission:manage-gymie|manage-users']], function () {
     Route::get('/', 'AclController@roleIndex');
     Route::get('create', 'AclController@createRole');
     Route::post('/', 'AclController@storeRole');

@@ -10,7 +10,7 @@ return [
     | The following language lines are used by ...
     |
     */
-
+    'navigation' => 'Navegación',
     'dashboard' => 'Panel',
     'enquiries' => 'Consultas',
     'all_enquiries' => 'Todas las Consultas',

@@ -110,6 +110,7 @@ class InvoicesController extends Controller
         $invoice = Invoice::findOrFail($id);
         $settings = \Utilities::getSettings();
 
+
         return view('invoices.show', compact('invoice', 'settings'));
     }
 

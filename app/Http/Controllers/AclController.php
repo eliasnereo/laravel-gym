@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use DB;
-use Auth;
 use App\Role;
 use App\User;
 use App\RoleUser;
 use App\Permission;
 use App\PermissionRole;
 use Illuminate\Http\Request;
+use App\Http\Requests\users\UpdateUserRequest;
 
 class AclController extends Controller
 {
@@ -43,12 +43,12 @@ class AclController extends Controller
                                 'email' => $request['email'],
                                 'password' => bcrypt($request['password']),
                               'status'=> $request->status, ]);
-
+        
         $user->save();
 
         // Adding Photo
         if ($request->hasFile('photo')) {
-            $user->addMedia($request->file('photo'))->usingFileName('staff_'.$user->id.$request->photo->getClientOriginalExtension())->toCollection('staff');
+            $user->addMedia($request->file('photo'))->usingFileName('staff_'.$user->id.".".$request->photo->getClientOriginalExtension())->toCollection('staff');
         }
         $user->save();
 
@@ -66,26 +66,19 @@ class AclController extends Controller
         return view('user.editUser', compact('user'));
     }
 
-    public function updateUser($id, Request $request)
+    public function updateUser($id, UpdateUserRequest $request)
     {
         $user = User::findOrFail($id);
 
         $user->name = $request->name;
         $user->email = $request->email;
-
-        if (! empty($request->password)) {
-            $this->validate($request, ['password' => 'required|string|min:6|confirmed']);
-            $user->password = bcrypt($request->password);
-        }
-
         $user->status = $request->status;
-
         $user->update();
-
+        
         if ($request->hasFile('photo')) {
-            $user->clearMediaCollection('staff');
-            $user->addMedia($request->file('photo'))->usingFileName('staff_'.$user->id.$request->photo->getClientOriginalExtension())->toCollection('staff');
+            $user->addMedia($request->file('photo'))->usingFileName('staff_'.$user->id.".".$request->photo->getClientOriginalExtension())->toCollection('staff');
         }
+
         $user->save();
 
         if ($user->roleUser->role->id != $request->role_id) {

@@ -6,11 +6,7 @@
         @forelse($recents as $recent)
             <tr>
                 <td>
-                    <?php
-                    $images = $recent->getMedia('profile');
-                    $profileImage = ($images->isEmpty() ? 'https://placeholdit.imgix.net/~text?txtsize=18&txt=NA&w=50&h=50' : url($images[0]->getUrl('thumb')));
-                    ?>
-                    <a href="{{ action('MembersController@show',['id' => $recent->id]) }}"><img src="{{ $profileImage }}"/></a>
+                    <a href="{{ action('MembersController@show',['id' => $recent->id]) }}"><img src="{{ $recent->getImageUrl('profile', 'thumb') }}" width="40" height="40"/></a>
                 </td>
 
                 <td>

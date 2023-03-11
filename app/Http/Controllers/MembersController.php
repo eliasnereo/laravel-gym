@@ -12,6 +12,7 @@ use App\Service;
 use App\Setting;
 use Carbon\Carbon;
 use App\SmsTrigger;
+use App\Utils\Utils;
 use App\ChequeDetail;
 use App\Subscription;
 use App\InvoiceDetail;
@@ -39,7 +40,7 @@ class MembersController extends Controller
 
         $request->flash();
 
-        return view('members.index', compact('members', 'count', 'drp_placeholder', 'old_sort'));
+        return view('members.index', compact('members', 'count', 'drp_placeholder'));
     }
 
     public function active(Request $request)
@@ -51,7 +52,7 @@ class MembersController extends Controller
 
         $request->flash();
 
-        return view('members.active', compact('members', 'count', 'drp_placeholder', 'old_sort'));
+        return view('members.active', compact('members', 'count', 'drp_placeholder'));
     }
 
     public function inactive(Request $request)
@@ -63,7 +64,7 @@ class MembersController extends Controller
 
         $request->flash();
 
-        return view('members.inactive', compact('members', 'count', 'drp_placeholder', 'old_sort'));
+        return view('members.inactive', compact('members', 'count', 'drp_placeholder'));
     }
 
     /**
@@ -128,45 +129,45 @@ class MembersController extends Controller
     public function store(Request $request)
     {
         // Member Model Validation
-        $this->validate($request, ['email' => 'unique:mst_members,email',
-                                   'contact' => 'unique:mst_members,contact',
-                                   'member_code' => 'unique:mst_members,member_code', ]);
+        $this->validate($request, [
+            'email' => 'unique:mst_members,email',
+            'contact' => 'unique:mst_members,contact',
+            'member_code' => 'unique:mst_members,member_code', 
+        ]);
 
         // Start Transaction
         DB::beginTransaction();
 
         try {
             // Store member's personal details
-            $memberData = ['name'=>$request->name,
-                                    'DOB'=> $request->DOB,
-                                    'gender'=> $request->gender,
-                                    'contact'=> $request->contact,
-                                    'emergency_contact'=> $request->emergency_contact,
-                                    'health_issues'=> $request->health_issues,
-                                    'email'=> $request->email,
-                                    'address'=> $request->address,
-                                    'member_id'=> $request->member_id,
-                                    'proof_name'=> $request->proof_name,
-                                    'member_code'=> $request->member_code,
-                                    'status'=> $request->status,
-                                    'pin_code'=> $request->pin_code,
-                                    'occupation'=> $request->occupation,
-                                    'aim'=> $request->aim,
-                                    'source'=> $request->source, ];
+            $memberData = [
+                'name'=>$request->name,
+                'DOB'=> $request->DOB,
+                'gender'=> $request->gender,
+                'contact'=> $request->contact,
+                'emergency_contact'=> $request->emergency_contact,
+                'health_issues'=> $request->health_issues,
+                'email'=> $request->email,
+                'address'=> $request->address,
+                'member_id'=> $request->member_id,
+                'proof_name'=> $request->proof_name,
+                'member_code'=> $request->member_code,
+                'status'=> $request->status,
+                'pin_code'=> $request->pin_code,
+                'occupation'=> $request->occupation,
+                'aim'=> $request->aim,
+                'source'=> $request->source,
+            ];
 
             $member = new Member($memberData);
             $member->createdBy()->associate(Auth::user());
             $member->updatedBy()->associate(Auth::user());
             $member->save();
 
-            // Adding media i.e. Profile & proof photo
             if ($request->hasFile('photo')) {
-                $member->addMedia($request->file('photo'))->usingFileName('profile_'.$member->id.'.'.$request->photo->getClientOriginalExtension())->toCollection('profile');
+                $member->addMedia($request->file('photo'))->usingFileName('profile_'.$member->id.".".$request->photo->getClientOriginalExtension())->toCollection('profile');
             }
 
-            if ($request->hasFile('proof_photo')) {
-                $member->addMedia($request->file('proof_photo'))->usingFileName('proof_'.$member->id.'.'.$request->proof_photo->getClientOriginalExtension())->toCollection('proof');
-            }
 
             // Helper function for calculating payment status
             $invoice_total = $request->admission_amount + $request->subscription_amount + $request->taxes_amount - $request->discount_amount;
@@ -186,17 +187,19 @@ class MembersController extends Controller
             }
 
             // Storing Invoice
-            $invoiceData = ['invoice_number'=> $request->invoice_number,
-                                     'member_id'=> $member->id,
-                                     'total'=> $invoice_total,
-                                     'status'=> $paymentStatus,
-                                     'pending_amount'=> $pending,
-                                     'discount_amount'=> $request->discount_amount,
-                                     'discount_percent'=> $request->discount_percent,
-                                     'discount_note'=> $request->discount_note,
-                                     'tax'=> $request->taxes_amount,
-                                     'additional_fees'=> $request->additional_fees,
-                                     'note'=>' ', ];
+            $invoiceData = [
+                'invoice_number'=> $request->invoice_number,
+                'member_id'=> $member->id,
+                'total'=> $invoice_total,
+                'status'=> $paymentStatus,
+                'pending_amount'=> $pending,
+                'discount_amount'=> $request->discount_amount,
+                'discount_percent'=> $request->discount_percent,
+                'discount_note'=> $request->discount_note,
+                'tax'=> $request->taxes_amount,
+                'additional_fees'=> $request->additional_fees,
+                'note'=>' ', 
+            ];
 
             $invoice = new Invoice($invoiceData);
             $invoice->createdBy()->associate(Auth::user());
@@ -205,13 +208,15 @@ class MembersController extends Controller
 
             // Storing subscription
             foreach ($request->plan as $plan) {
-                $subscriptionData = ['member_id'=> $member->id,
-                                            'invoice_id'=> $invoice->id,
-                                            'plan_id'=> $plan['id'],
-                                            'start_date'=> $plan['start_date'],
-                                            'end_date'=> $plan['end_date'],
-                                            'status'=> \constSubscription::onGoing,
-                                            'is_renewal'=>'0', ];
+                $subscriptionData = [
+                    'member_id'=> $member->id,
+                    'invoice_id'=> $invoice->id,
+                    'plan_id'=> $plan['id'],
+                    'start_date'=> $plan['start_date'],
+                    'end_date'=> $plan['end_date'],
+                    'status'=> \constSubscription::onGoing,
+                    'is_renewal'=>'0', 
+                ];
 
                 $subscription = new Subscription($subscriptionData);
                 $subscription->createdBy()->associate(Auth::user());
@@ -219,9 +224,11 @@ class MembersController extends Controller
                 $subscription->save();
 
                 //Adding subscription to invoice(Invoice Details)
-                $detailsData = ['invoice_id'=> $invoice->id,
-                                       'plan_id'=> $plan['id'],
-                                       'item_amount'=> $plan['price'], ];
+                $detailsData = [
+                    'invoice_id'=> $invoice->id,
+                    'plan_id'=> $plan['id'],
+                    'item_amount'=> $plan['price'], 
+                ];
 
                 $invoiceDetails = new InvoiceDetail($detailsData);
                 $invoiceDetails->createdBy()->associate(Auth::user());
@@ -230,10 +237,12 @@ class MembersController extends Controller
             }
 
             // Store Payment Details
-            $paymentData = ['invoice_id'=> $invoice->id,
-                                     'payment_amount'=> $request->payment_amount,
-                                     'mode'=> $request->mode,
-                                     'note'=> ' ', ];
+            $paymentData = [
+                'invoice_id'=> $invoice->id,
+                'payment_amount'=> $request->payment_amount,
+                'mode'=> $request->mode,
+                'note'=> ' ', 
+            ];
 
             $paymentDetails = new PaymentDetail($paymentData);
             $paymentDetails->createdBy()->associate(Auth::user());
@@ -361,17 +370,12 @@ class MembersController extends Controller
      */
     public function update($id, Request $request)
     {
+        // dd($request);
         $member = Member::findOrFail($id);
         $member->update($request->all());
 
         if ($request->hasFile('photo')) {
-            $member->clearMediaCollection('profile');
-            $member->addMedia($request->file('photo'))->usingFileName('profile_'.$member->id.'.'.$request->photo->getClientOriginalExtension())->toCollection('profile');
-        }
-
-        if ($request->hasFile('proof_photo')) {
-            $member->clearMediaCollection('proof');
-            $member->addMedia($request->file('proof_photo'))->usingFileName('proof_'.$member->id.'.'.$request->proof_photo->getClientOriginalExtension())->toCollection('proof');
+            $member->addMedia($request->file('photo'))->usingFileName('profile_'.$member->id.".".$request->photo->getClientOriginalExtension())->toCollection('profile');
         }
 
         $member->updatedBy()->associate(Auth::user());

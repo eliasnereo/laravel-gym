@@ -27,7 +27,7 @@
     <div class="col-sm-6">
         <div class="form-group">
             {!! Form::label('DOB','Date of birth') !!}
-            {!! Form::text('DOB',null,['class'=>'form-control datepicker-default', 'id' => 'DOB']) !!}
+            {!! Form::text('DOB',null,['class'=>'form-control _datepicker-default', 'id' => 'DOB']) !!}
         </div>
     </div>
 
@@ -77,36 +77,11 @@
         </div>
     </div>
 
-    @if(isset($member))
-        <?php
-        $media = $member->getMedia('proof');
-        $image = ($media->isEmpty() ? 'https://placeholdit.imgix.net/~text?txtsize=18&txt=NA&w=70&h=70' : url($media[0]->getUrl('form')));
-        ?>
-        <div class="col-sm-4">
-            <div class="form-group">
-                {!! Form::label('proof_photo','Proof photo') !!}
-                {!! Form::file('proof_photo',['class'=>'form-control', 'id' => 'proof_photo']) !!}
-            </div>
-        </div>
-        <div class="col-sm-2">
-            <img alt="proof Pic" class="pull-right" src="{{ $image }}"/>
-        </div>
-    @else
-        <div class="col-sm-6">
-            <div class="form-group">
-                {!! Form::label('proof_photo','Proof photo') !!}
-                {!! Form::file('proof_photo',['class'=>'form-control', 'id' => 'proof_photo']) !!}
-            </div>
-        </div>
-    @endif
+    
 </div>
 
 <div class="row">
     @if(isset($member))
-        <?php
-        $media = $member->getMedia('profile');
-        $image = ($media->isEmpty() ? 'https://placeholdit.imgix.net/~text?txtsize=18&txt=NA&w=70&h=70' : url($media[0]->getUrl('form')));
-        ?>
         <div class="col-sm-4">
             <div class="form-group">
                 {!! Form::label('photo','Photo') !!}
@@ -114,7 +89,7 @@
             </div>
         </div>
         <div class="col-sm-2">
-            <img alt="profile Pic" class="pull-right" src="{{ $image }}"/>
+            <img alt="profile Pic" class="pull-right" src="{{ $member->getImageUrl('profile', 'form') }}" height="40" width="40"/>
         </div>
     @else
         <div class="col-sm-6">
